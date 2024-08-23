@@ -1,28 +1,73 @@
-import { FlatList, StyleSheet,Text,  View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import StopBtn from '@/components/StopBtn';
 import Item from '@/components/Item';
 import data from '@/data/ItemsData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import MyModal from '@/components/MyModal';
+import { playSound } from '@/utils/manage-sound/play-sound';
+import { useBatteryState } from 'expo-battery';
 
 
 export default function HomeScreen() {
+  const [selectedItemSound, setSelectedItemSound] = useState<number | null>(null);
+  const [soundSrc, setSoundSrc] = useState<number | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const batteryState = useBatteryState();
 
-  const [soundSrc, setSoundSrc] = useState('');
-
-  const openModal = (soundSrc:any) => {
-    setSoundSrc(soundSrc);
+  const handleItemPress = (sound: number) => {
+    setSelectedItemSound(sound);
+    setModalVisible(true);
   };
+
+  useEffect(() => {
+    if (batteryState == 2 && soundSrc) {
+      playSound(soundSrc);
+    }
+}, [batteryState]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Charging Sounds Prank</Text>
-      <StopBtn onClick={()=>{}}/>
+      <StopBtn onClick={() => {}} />
+      <MyModal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        statusBarTranslucent
+        onRequestClose={() => {
+          console.log('close modal');
+        }}
+        closeModal={() => {
+          setModalVisible(false);
+        }}
+      >
+        <TouchableOpacity onPress={() => {setSoundSrc(selectedItemSound)}}>
+          <Text style={styles.txt}>Set Charging Prank</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            if (soundSrc) {
+              console.log('soundSrc', soundSrc);
+              playSound(soundSrc);
+            }
+          }}
+        >
+          <Text style={styles.txt}>Play Sound</Text>
+        </TouchableOpacity>
+      </MyModal>
       <FlatList
         data={data}
         numColumns={2}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Item id={item.id.toString()} title={item.title}
-         img={item.img} sound={item.sound} />}
+        renderItem={({ item }) => (
+          <Item
+            id={item.id.toString()}
+            title={item.title}
+            img={item.img}
+            sound={item.sound}
+            handleItemPress={handleItemPress}
+          />
+        )}
       />
     </View>
   );
@@ -44,5 +89,10 @@ const styles = StyleSheet.create({
     textShadowColor: '#333333', // Dark outline color (almost black)
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1, // Controls the thickness of the outline
+  },
+  txt: {
+    fontSize: 20,
+    fontFamily: 'futurino',
+    color: 'black',
   },
 });

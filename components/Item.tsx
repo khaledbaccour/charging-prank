@@ -6,12 +6,13 @@ type ItemProps = {
     title: string;
     img: any;
     sound: any;
+    handleItemPress: (sound: any) => void;
 };
 
-const Item = ({ id, title , img, sound}: ItemProps) => {
+const Item = ({ id, title , img, sound, handleItemPress}: ItemProps) => {
     
     return (
-        <TouchableOpacity style={styles.container} >
+        <TouchableOpacity style={styles.container} onPress={()=>{handleItemPress(sound)}} >
             <View style={styles.miniContainer1}>
                 <Image source={img} style={styles.image} />
             </View>

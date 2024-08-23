@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.khaled.chargingprank"
     },
     "web": {
       "bundler": "metro",
@@ -28,7 +29,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-av",
+        {
+          "sound": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
