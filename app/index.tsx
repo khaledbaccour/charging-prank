@@ -9,21 +9,24 @@ import { useBatteryState } from 'expo-battery';
 
 
 export default function HomeScreen() {
-  const [selectedItemSound, setSelectedItemSound] = useState<number | null>(null);
   const [soundSrc, setSoundSrc] = useState<number | null>(null);
+  const [chargeSoundSource, setChargeSoundSource] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const batteryState = useBatteryState();
+  
 
   const handleItemPress = (sound: number) => {
-    setSelectedItemSound(sound);
+    setSoundSrc(sound);
     setModalVisible(true);
   };
+  
 
-  useEffect(() => {
-    if (batteryState == 2 && soundSrc) {
-      playSound(soundSrc);
-    }
-}, [batteryState]);
+  //useEffect(() => {
+    //if (batteryState == 2 && chargeSoundSource) {
+    //  playSound(chargeSoundSource);
+   // }
+//}, [batteryState]);
+
+// create a batteyState that keeps changing even if app is in background (not yet killed)
 
   return (
     <View style={styles.container}>
@@ -41,13 +44,12 @@ export default function HomeScreen() {
           setModalVisible(false);
         }}
       >
-        <TouchableOpacity onPress={() => {setSoundSrc(selectedItemSound)}}>
+        <TouchableOpacity onPress={() => {setChargeSoundSource(soundSrc)}}>
           <Text style={styles.txt}>Set Charging Prank</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             if (soundSrc) {
-              console.log('soundSrc', soundSrc);
               playSound(soundSrc);
             }
           }}
